@@ -3,12 +3,12 @@ import React from "react";
 import { useState, useEffect } from "react";
 //import styles from "./table-style.css";
 import Card from "../Card";
-import Panel from "../ActionPanel";
 //import axios from "axios";
 import { makeStyles } from "@material-ui/core";
 //import { getDefaultNormalizer } from "@testing-library/react";
 import Player from "../Player";
-import { ICards, IPlayer } from "../../types";
+import { ICard, IPlayer, IPocketHand } from "../../types";
+import ActionPanel from "../ActionPanel";
 
 const useStyles = makeStyles({
   // * {
@@ -76,23 +76,36 @@ const useStyles = makeStyles({
 const Table: React.FC = () => {
   const classes = useStyles();
 
-  const [currentPlayerPosition, setCurrentPlayerPosition] = React.useState(4);
+  const [currentPlayerPosition, setCurrentPlayerPosition] = React.useState(4); // taken from preflop
   const [
     currentPlayerCards,
     setCurrentPlayerCards,
-  ] = React.useState<ICards | null>(null);
+  ] = React.useState<IPocketHand | null>([
+    ["9", "h"],
+    ["6", "d"],
+  ]); // taken from preflop
 
   const [players, setPlayers] = React.useState<IPlayer[]>([
-    { name: "john", position: 1, username: "john", stack_size: 10000 },
+    {
+      name: "john",
+      position: 1,
+      username: "john",
+      stack_size: 10000,
+      cards: [
+        ["T", "h"],
+        ["8", "h"],
+      ],
+    },
     { name: "john", position: 2, username: "john", stack_size: 10000 },
     { name: "john", position: 3, username: "john", stack_size: 10000 },
     { name: "john", position: 4, username: "john", stack_size: 10000 },
     { name: "john", position: 5, username: "john", stack_size: 10000 },
     { name: "john", position: 6, username: "john", stack_size: 10000 },
   ]);
+  // taken from preflop
   console.log(players);
 
-  const [event, setEvent] = React.useState();
+  const [event, setEvent] = React.useState("");
 
   const [cardsOnTable, setCardsOnTable] = useState([]);
   const [call, setCall] = useState();
@@ -101,40 +114,15 @@ const Table: React.FC = () => {
 
   const [tableId, setTableId] = useState(123); //fixme:
   const [username, setUsername] = useState("username");
-  const [actions, setActions] = useState([]);
+  const [actions, setActions] = useState([
+    { type: "fold" },
+    { type: "check" },
+    { type: "call", size: 20 },
+    { type: "raise", min: 50, max: 150 },
+  ]);
 
   useEffect(() => {}, []);
 
-  // constructor(props) {
-  //   super(props);
-  //   this.state = {
-  //     data: [], // consider this is data taken
-  //     actions: [
-  //       { type: "fold" },
-  //       { type: "check" },
-  //       { type: "call", size: 20 },
-  //       { type: "raise", min: 50, max: 150 },
-  //     ],
-  //     actionPosition: 4,
-  //     cardsOnTable: [], // add cards here from flop, turn, river events
-  //     event: "",
-  //     players: [], // taken from preflop
-  //     currentPlayerPosition: 0, // taken from preflop
-  //     currentPlayerCards: [], // taken from preflop
-  //     isNewHand: false,
-  //     handleState: 0,
-  //     call: "",
-  //   };
-  //   this.username = this.props.location.state.username; //might cause some shit
-  //   this.tableId = this.props.location.state.tableId;
-  //   this.handleRiver = this.handleRiver.bind(this);
-  //   this.handleTurn = this.handleTurn.bind(this);
-  //   this.handleFlop = this.handleFlop.bind(this);
-  //   this.handleActions = this.handleActions.bind(this);
-  //   this.processEvents = this.processEvents.bind(this);
-  //   this.getData = this.getData.bind(this);
-  //   this.setCall = this.setCall.bind(this);
-  // }
   // setCall(value) {
   //   this.setState({ call: value });
   //   console.log(this.state.call);
@@ -240,7 +228,7 @@ const Table: React.FC = () => {
               ))}
             </div>
           )}
-          <div className={classes.playerArea}>
+          <div className={classes.playerArea} style={{ display: "flex" }}>
             {players.map((player: IPlayer, index: number) => (
               <Player
                 player={player}
@@ -255,15 +243,16 @@ const Table: React.FC = () => {
         </div>
       </div>
       <div className={classes.panel}>
-        {event === "request_action" &&
-          currentPlayerPosition === actionPosition && (
-            <Panel
-              actions={actions}
-              tableId={tableId}
-              username={username}
-              setCall={setCall}
-            />
-          )}
+        {
+          // event === "request_action" &&
+          // currentPlayerPosition === actionPosition &&
+          <ActionPanel
+            actions={actions}
+            tableId={tableId}
+            username={username}
+            setCall={setCall}
+          />
+        }
       </div>
     </div>
   );

@@ -3,6 +3,9 @@ export type IPlayer = {
   username: string;
   position: number;
   stack_size: number;
+  cards?: IPocketHand;
 };
 
-export type ICards = {};
+export type ICard = [string, string]; //suit,value
+
+export type IPocketHand = [ICard, ICard];

@@ -2,7 +2,7 @@ import React from "react";
 //import styles from "./player-style.css";
 import Card from "../Card";
 import { makeStyles } from "@material-ui/styles";
-import { IPlayer } from "../../types";
+import { IPlayer, IPocketHand, ICard } from "../../types";
 
 const useStyles = makeStyles({
   player: {
@@ -96,7 +96,7 @@ const useStyles = makeStyles({
 interface PlayerProps {
   player: IPlayer;
   currentPlayerPosition: number;
-  currentPlayerCards: any;
+currentPlayerCards: IPocketHand | null;
   position: number;
   value: any;
 }
@@ -116,12 +116,12 @@ const Player = ({
         {currentPlayerPosition === position && <h3>{value}</h3>}
         {currentPlayerPosition === position &&
           currentPlayerCards &&
-          currentPlayerCards.map((card: any, index: number) => (
+          currentPlayerCards.map((card: ICard, index: number) => (
             <Card value={card[0]} suitProp={card[1]} key={index} />
           ))}
         {currentPlayerPosition !== position &&
           currentPlayerCards &&
-          currentPlayerCards.map((card: any, index: number) => (
+          currentPlayerCards.map((card: ICard, index: number) => (
             <Card disabled={true} key={index} />
           ))}
       </div>

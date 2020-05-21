@@ -25,7 +25,7 @@
   position: absolute;
   top: 30%;
   left: 27%;
-  background-image: url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/441095/clovers.svg');
+  background-image: url("https://s3-us-west-2.amazonaws.com/s.cdpn.io/441095/clovers.svg");
   background-size: 60px;
   background-position: 30px 30px;
 }
@@ -36,7 +36,7 @@
   position: absolute;
   top: 30%;
   left: 27%;
-  background-image: url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/441095/clovers.svg');
+  background-image: url("https://s3-us-west-2.amazonaws.com/s.cdpn.io/441095/clovers.svg");
   background-size: 60px;
   background-position: 30px 0;
 }
@@ -47,7 +47,7 @@
   position: absolute;
   top: 30%;
   left: 27%;
-  background-image: url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/441095/clovers.svg');
+  background-image: url("https://s3-us-west-2.amazonaws.com/s.cdpn.io/441095/clovers.svg");
   background-size: 60px;
   background-position: 0 30px;
 }
@@ -58,34 +58,42 @@
   position: absolute;
   top: 30%;
   left: 27%;
-  background-image: url('https://s3-us-west-2.amazonaws.com/s.cdpn.io/441095/clovers.svg');
+  background-image: url("https://s3-us-west-2.amazonaws.com/s.cdpn.io/441095/clovers.svg");
   background-size: 60px;
   background-position: 0 0;
 }
 
-.clubs-value, .spades-value {
+.clubs-value,
+.spades-value {
   color: #515260;
   font-size: 16px;
   font-weight: bold;
   margin: 0;
 }
 
-.hearts-value, .diamonds-value {
-  color: #EC6E69;
+.hearts-value,
+.diamonds-value {
+  color: #ec6e69;
   font-size: 16px;
   font-weight: bold;
   margin: 0;
 }
 
-.clubs-value:first-child, .spades-value:first-child, .hearts-value:first-child, .diamonds-value:first-child {
+.clubs-value:first-child,
+.spades-value:first-child,
+.hearts-value:first-child,
+.diamonds-value:first-child {
   top: 2px;
   left: 5px;
   position: absolute;
 }
 
-.clubs-value:last-child, .spades-value:last-child, .hearts-value:last-child, .diamonds-value:last-child {
+.clubs-value:last-child,
+.spades-value:last-child,
+.hearts-value:last-child,
+.diamonds-value:last-child {
   position: absolute;
   bottom: 2px;
   right: 5px;
-  transform: rotatez(180deg)
+  transform: rotatez(180deg);
 }
