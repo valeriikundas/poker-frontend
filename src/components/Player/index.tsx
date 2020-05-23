@@ -18,24 +18,24 @@ const useStyles = makeStyles({
   },
 
   playerCard: {
-    // //position: "absolute !important",
-    // bottom: "10%",
-    // left: "9%",
-    // zIndex: -1,
+    // position: "absolute !important",
+    bottom: "10%",
+    left: "9%",
+    zIndex: -1,
   },
 
   playerAvatar: {},
 
   playerName: {
-    // padding: "3px",
-    // textAlign: "center",
-    // color: "#ffffff",
+    padding: "3px",
+    textAlign: "center",
+    color: "#ffffff",
   },
 
   playerStack: {
-    // padding: "3px",
-    // textAlign: "center",
-    // color: "#00fff2",
+    padding: "3px",
+    textAlign: "center",
+    color: "#00fff2",
   },
 
   // "@global": {
@@ -96,7 +96,7 @@ const useStyles = makeStyles({
 interface PlayerProps {
   player: IPlayer;
   currentPlayerPosition: number;
-currentPlayerCards: IPocketHand | null;
+  currentPlayerCards: IPocketHand | null;
   position: number;
   value: any;
 }
@@ -111,18 +111,22 @@ const Player = ({
   const classes = useStyles();
 
   return (
-    <div className={classes.player}>
+    <div
+      className={classes.player}
+      style={{ border: "solid 2px", margin: "5px", borderColor: "#335855" }}
+      //todo: remove above style for table?
+    >
       <div className={classes.playerCard}>
         {currentPlayerPosition === position && <h3>{value}</h3>}
         {currentPlayerPosition === position &&
           currentPlayerCards &&
           currentPlayerCards.map((card: ICard, index: number) => (
-            <Card value={card[0]} suitProp={card[1]} key={index} />
+            <Card key={index} card={card} />
           ))}
         {currentPlayerPosition !== position &&
           currentPlayerCards &&
           currentPlayerCards.map((card: ICard, index: number) => (
-            <Card disabled={true} key={index} />
+            <Card key={index} disabled />
           ))}
       </div>
       <div className={classes.playerPlace}>

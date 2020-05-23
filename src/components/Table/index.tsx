@@ -4,11 +4,13 @@ import { useState, useEffect } from "react";
 //import styles from "./table-style.css";
 import Card from "../Card";
 //import axios from "axios";
-import { makeStyles } from "@material-ui/core";
+import { makeStyles, Button, TextField } from "@material-ui/core";
 //import { getDefaultNormalizer } from "@testing-library/react";
 import Player from "../Player";
-import { ICard, IPlayer, IPocketHand } from "../../types";
+import { ICard, IPlayer, IPocketHand, IRequestAction } from "../../types";
 import ActionPanel from "../ActionPanel";
+import API from "../../api";
+import axios from "axios";
 
 const useStyles = makeStyles({
   // * {
@@ -70,6 +72,7 @@ const useStyles = makeStyles({
     // width: "100%",
     // height: "100%",
     // zIndex: 100,
+    display: "flex",
   },
 });
 
@@ -81,47 +84,48 @@ const Table: React.FC = () => {
     currentPlayerCards,
     setCurrentPlayerCards,
   ] = React.useState<IPocketHand | null>([
-    ["9", "h"],
-    ["6", "d"],
+    { suit: "diamonds", value: "9" },
+    { suit: "clubs", value: "6" },
   ]); // taken from preflop
 
-  const [players, setPlayers] = React.useState<IPlayer[]>([
-    {
-      name: "john",
-      position: 1,
-      username: "john",
-      stack_size: 10000,
-      cards: [
-        ["T", "h"],
-        ["8", "h"],
-      ],
-    },
-    { name: "john", position: 2, username: "john", stack_size: 10000 },
-    { name: "john", position: 3, username: "john", stack_size: 10000 },
-    { name: "john", position: 4, username: "john", stack_size: 10000 },
-    { name: "john", position: 5, username: "john", stack_size: 10000 },
-    { name: "john", position: 6, username: "john", stack_size: 10000 },
-  ]);
+  const [players, setPlayers] = React.useState<IPlayer[]>([]);
   // taken from preflop
-  console.log(players);
 
   const [event, setEvent] = React.useState("");
 
-  const [cardsOnTable, setCardsOnTable] = useState([]);
+  const [cardsOnTable, setCardsOnTable] = useState<ICard[]>([]);
   const [call, setCall] = useState();
 
   const [actionPosition, setActionPosition] = React.useState(4);
 
-  const [tableId, setTableId] = useState(123); //fixme:
-  const [username, setUsername] = useState("username");
-  const [actions, setActions] = useState([
+  const [tableId, setTableId] = useState(1); //fixme:
+  const [username, setUsername] = useState("");
+  const [actions, setActions] = useState<IRequestAction[]>([
     { type: "fold" },
     { type: "check" },
     { type: "call", size: 20 },
     { type: "raise", min: 50, max: 150 },
   ]);
 
-  useEffect(() => {}, []);
+  const [pot, setPot] = useState(0);
+
+  const [isPlayer, setIsPlayer] = useState(false);
+
+  const refreshPlayers = async () => {
+    const response = await axios.get("http://localhost:5000/api/tables/1/");
+    setPlayers(response.data["players"]);
+  };
+
+  useEffect(() => {
+    refreshPlayers();
+
+    setCardsOnTable([
+      { value: "9", suit: "spades" },
+      { value: "T", suit: "diamonds" },
+      { value: "2", suit: "hearts" },
+      { value: "A", suit: "clubs" },
+    ]);
+  }, []);
 
   // setCall(value) {
   //   this.setState({ call: value });
@@ -214,21 +218,54 @@ const Table: React.FC = () => {
     // };
   }, [getData]);
 
+  const onUsernameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const value = event.target.value;
+    setUsername(value);
+  };
+
+  const onJoinTableClick = async () => {
+    const response = await axios.get(
+      `http://localhost:5000/api/tables/${tableId}/join/${username}/`
+    );
+    console.log("join table ", response.data);
+    setIsPlayer(true);
+    refreshPlayers();
+    //todo: subscribe #2 to socketio
+  };
+
+  const onLeaveTableClick = async () => {
+    const response = await axios.get(
+      `http://localhost:5000/api/tables/${tableId}/leave/${username}/`
+    );
+    console.log("join table ", response.data);
+    setIsPlayer(false);
+    refreshPlayers();
+    //todo: subscribe #2 to socketio
+  };
+
   return (
-    <div>
-      {/* className={classes.container}> */}
-      <div>
-        {/* className={classes.containerTable}> */}
-        <div>
-          {/* className={classes.table}> */}
-          {event !== "preflop" && event !== "" && (
-            <div className={classes.cardsArea}>
-              {cardsOnTable.map((card, index) => (
-                <Card value={card[0]} suitProp={card[1]} key={index} />
-              ))}
-            </div>
-          )}
-          <div className={classes.playerArea} style={{ display: "flex" }}>
+    <div className={classes.container}>
+      <TextField
+        value={username}
+        onChange={onUsernameChange}
+        // disabled={isPlayer}todo:make disabled when game is going
+      ></TextField>
+      <Button onClick={onJoinTableClick}>Join</Button>
+      <Button onClick={onLeaveTableClick}>Leave</Button>
+
+      <div className={classes.containerTable}>
+        <div className={classes.table}>
+          <div>{pot}</div>
+
+          {/* {event !== "preflop" && event !== "" && ( */}
+          <div className={classes.cardsArea}>
+            {cardsOnTable.map((card, index) => (
+              <Card key={index} card={card} />
+            ))}
+          </div>
+          {/* )} */}
+
+          <div className={classes.playerArea}>
             {players.map((player: IPlayer, index: number) => (
               <Player
                 player={player}

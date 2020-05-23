@@ -12,7 +12,6 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <div>table</div>
         <Router>
           <Switch>
             <Route path="/table">

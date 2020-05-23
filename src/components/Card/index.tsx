@@ -1,32 +1,25 @@
-import React, { useEffect } from "react";
+import React from "react";
+import { ICard } from "../../types";
 import "./card-style.css";
 
 interface ICardProps {
-  suitProp?: string;
-  value?: string;
+  card?: ICard;
   disabled?: boolean;
 }
 
-const Card = ({ suitProp, value, disabled }: ICardProps) => {
-  const [suit, setSuit] = React.useState("");
-
-  useEffect(() => {
-    if (suitProp === "d") setSuit("diamonds");
-    if (suitProp === "c") setSuit("clubs");
-    if (suitProp === "h") setSuit("hearts");
-    if (suitProp === "s") setSuit("spades");
-  }, [suitProp]);
-
+const Card = ({ card, disabled }: ICardProps) => {
   return (
     <>
       {disabled ? (
-        <div className="cardDis"></div>
+        <div className="cardDisabled"></div>
       ) : (
-        <div className="card">
-          <h2 className={`${suit}-value`}>{value}</h2>
-          <div className={suit}></div>
-          <h2 className={`${suit}-value`}>{value}</h2>
-        </div>
+        card && (
+          <div className="card">
+            <h2 className={`${card.suit}-value`}>{card.value}</h2>
+            <div className={card.suit}></div>
+            <h2 className={`${card.suit}-value`}>{card.value}</h2>
+          </div>
+        )
       )}
     </>
   );

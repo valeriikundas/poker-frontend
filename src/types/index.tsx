@@ -6,6 +6,20 @@ export type IPlayer = {
   cards?: IPocketHand;
 };
 
-export type ICard = [string, string]; //suit,value
+type ISuit = "diamonds" | "hearts" | "clubs" | "spades";
+
+export type ICard = {
+  suit: ISuit;
+  value: string;
+};
 
 export type IPocketHand = [ICard, ICard];
+
+export type ActionType = "fold" | "check" | "call" | "raise";
+
+export type IRequestAction = {
+  type: ActionType;
+  size?: number;
+  min?: number;
+  max?: number;
+};

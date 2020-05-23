@@ -8,14 +8,14 @@
   background-color: white;
 }
 
-.cardDis {
+.cardDisabled {
   height: 100px;
   width: 70px;
   margin: 5px;
   border-radius: 5px;
   display: inline-block;
   position: relative;
-  background: url(https://s3.amazonaws.com/spoonflower/public/design_thumbnails/0585/3987/rHaromszoges_Gray_mirror.png);
+  background: url("../../back.png");
   background-size: 100%;
 }
 
@@ -25,7 +25,7 @@
   position: absolute;
   top: 30%;
   left: 27%;
-  background-image: url("https://s3-us-west-2.amazonaws.com/s.cdpn.io/441095/clovers.svg");
+  background-image: url("../../suits.svg");
   background-size: 60px;
   background-position: 30px 30px;
 }
@@ -36,7 +36,7 @@
   position: absolute;
   top: 30%;
   left: 27%;
-  background-image: url("https://s3-us-west-2.amazonaws.com/s.cdpn.io/441095/clovers.svg");
+  background-image: url("../../suits.svg");
   background-size: 60px;
   background-position: 30px 0;
 }
@@ -47,7 +47,7 @@
   position: absolute;
   top: 30%;
   left: 27%;
-  background-image: url("https://s3-us-west-2.amazonaws.com/s.cdpn.io/441095/clovers.svg");
+  background-image: url("../../suits.svg");
   background-size: 60px;
   background-position: 0 30px;
 }
@@ -58,7 +58,7 @@
   position: absolute;
   top: 30%;
   left: 27%;
-  background-image: url("https://s3-us-west-2.amazonaws.com/s.cdpn.io/441095/clovers.svg");
+  background-image: url("../../suits.svg");
   background-size: 60px;
   background-position: 0 0;
 }
