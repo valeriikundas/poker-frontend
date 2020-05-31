@@ -1,0 +1,140 @@
+
+body {
+  font-family: 'Open Sans', sans-serif;
+  color: #A7A1AE;
+  background: #222;
+}
+
+.wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+table {
+  border-radius: 20px;
+  box-shadow: 0 0 5px #fff,
+  0 0 10px #fff,
+  0 0 20px #fff,
+  0 0 40px #0c8787,
+  0 0 60px #0ff;
+}
+
+h1 {
+  font-size: 3em;
+  font-weight: 300;
+  line-height: 1em;
+  text-align: center;
+  color: #00FFFF;
+}
+
+h2 {
+  font-size: 1em;
+  font-weight: 300;
+  text-align: center;
+  display: block;
+  line-height: 1em;
+  padding-bottom: 2em;
+  color: #00FFFF;
+}
+
+h2 a {
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #00FFFF;
+  text-decoration: none;
+}
+
+.blue {
+  color: #185875;
+}
+
+.yellow {
+  color: #22fff0;
+}
+
+.container th h1 {
+  font-weight: bold;
+  font-size: 1em;
+  text-align: left;
+  color: #A8FFE5;
+
+}
+
+.container td {
+  font-weight: normal;
+  font-size: 1em;
+  -webkit-box-shadow: 0 2px 2px -2px #0E1119;
+  -moz-box-shadow: 0 2px 2px -2px #0E1119;
+  box-shadow: 0 2px 2px -2px #0E1119;
+}
+
+.container {
+  text-align: left;
+  overflow: hidden;
+  width: 80%;
+  margin: 0 auto;
+  display: table;
+}
+
+.container td, .container th {
+  padding: 1%;
+}
+
+/* Background-color of the odd rows */
+.container tr:nth-child(odd) {
+  background-color: #257d83;
+}
+
+/* Background-color of the even rows */
+.container tr:nth-child(even) {
+  background-color: #12595e;
+}
+
+.container th {
+  background-color: #083439;
+}
+
+.container td:first-child {
+  color: #d6eeef;
+}
+
+.container tr:hover {
+  background-color: #004a52;
+  -webkit-box-shadow: 0 6px 6px -6px #0E1119;
+  -moz-box-shadow: 0 6px 6px -6px #0E1119;
+  box-shadow: 0 6px 6px -6px #0E1119;
+}
+
+.container td:hover {
+  background-color: #11d9cb;
+  color: #134037;
+  font-weight: bold;
+
+  box-shadow: #0f7f6c -1px 1px, #0a7f73 -2px 2px, #0d7f74 -3px 3px, #057f76 -4px 4px, #0d7f74 -5px 5px, #0d7f74 -6px 6px;
+  transform: translate3d(6px, -6px, 0);
+
+  transition-delay: 0s;
+  transition-duration: 0.4s;
+  transition-property: all;
+  transition-timing-function: line;
+}
+
+@media (max-width: 800px) {
+  .container td:nth-child(4),
+  .container th:nth-child(4) {
+    display: none;
+  }
+}
+
+.button {
+  background: #2d7576!important;
+  border: 1px solid;
+  padding: 15px 5px;
+  border-radius: 25px;
+  background: rgba(255, 255, 255, .1);
+  width: 80%;
+  color: #fff;
+  display: block;
+}
