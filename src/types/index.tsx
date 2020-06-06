@@ -8,9 +8,24 @@ export type IPlayer = {
 
 type ISuit = "diamonds" | "hearts" | "clubs" | "spades";
 
+type IRank =
+  | "2"
+  | "3"
+  | "4"
+  | "5"
+  | "6"
+  | "7"
+  | "8"
+  | "9"
+  | "T"
+  | "J"
+  | "Q"
+  | "K"
+  | "A";
+
 export type ICard = {
   suit: ISuit;
-  value: string;
+  rank: IRank;
 };
 
 export type IPocketHand = [ICard, ICard];

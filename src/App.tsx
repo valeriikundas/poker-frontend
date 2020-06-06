@@ -1,12 +1,8 @@
 import * as React from "react";
-//import logo from "./logo.svg";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import "./App.css";
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import Dashboard from "./components/Dashboard";
 import Table from "./components/Table";
-
-const Home: React.FC = () => {
-  return <div>Home</div>;
-};
 
 function App() {
   return (
@@ -14,11 +10,11 @@ function App() {
       <header className="App-header">
         <Router>
           <Switch>
-            <Route path="/table">
+            <Route path="/table/:id">
               <Table />
             </Route>
-            <Route path="/home">
-              <Home />
+            <Route path="/">
+              <Dashboard />
             </Route>
           </Switch>
         </Router>

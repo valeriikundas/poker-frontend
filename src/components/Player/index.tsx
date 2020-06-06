@@ -131,6 +131,7 @@ const Player = ({
       </div>
       <div className={classes.playerPlace}>
         <div className={classes.playerName}>{player.username}</div>
+        <div className={classes.playerName}>{player.position || "none"}</div>
         <div className={classes.playerStack}>{player.stack_size}</div>
       </div>
     </div>

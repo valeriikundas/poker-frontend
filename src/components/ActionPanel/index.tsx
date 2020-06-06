@@ -159,7 +159,7 @@ const ActionPanel = ({
                 call {button.size}
               </Button>
             ) : button.type === "raise" ? (
-              <div className={classes.buttons}>
+              <div className={classes.buttons} key={index}>
                 <Button
                   key={index}
                   className={classes.actionButton}

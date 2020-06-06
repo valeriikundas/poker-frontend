@@ -15,9 +15,9 @@ const Card = ({ card, disabled }: ICardProps) => {
       ) : (
         card && (
           <div className="card">
-            <h2 className={`${card.suit}-value`}>{card.value}</h2>
+            <h2 className={`${card.suit}-value`}>{card.rank}</h2>
             <div className={card.suit}></div>
-            <h2 className={`${card.suit}-value`}>{card.value}</h2>
+            <h2 className={`${card.suit}-value`}>{card.rank}</h2>
           </div>
         )
       )}
