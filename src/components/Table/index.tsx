@@ -1,91 +1,32 @@
-import React from "react";
-
-import { useState, useEffect } from "react";
-//import styles from "./table-style.css";
-import Card from "../Card";
-//import axios from "axios";
-import { makeStyles, Button, TextField } from "@material-ui/core";
-//import { getDefaultNormalizer } from "@testing-library/react";
-import Player from "../Player";
+import { Button, TextField } from "@material-ui/core";
+import React, { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
+import socketIOClient from "socket.io-client";
+import API from "../../api";
 import { ICard, IPlayer, IPocketHand, IRequestAction } from "../../types";
 import ActionPanel from "../ActionPanel";
-import API from "../../api";
-import axios from "axios";
+import Card from "../Card";
+//import { getDefaultNormalizer } from "@testing-library/react";
+import Player from "../Player";
+import useStyles from "./style";
 
-const useStyles = makeStyles({
-  // * {
-  //   margin: 0;
-  //   padding: 0;
-  // },
-
-  body: {
-    //  background: "#222",
-  },
-
-  container: {
-    // display: "flex",
-    // flexDirection: "column",
-    // height: "100vh",
-  },
-
-  containerTable: {
-    // display: "flex",
-    // flexGrow: 4,
-    // width: "75%",
-    // margin: "0 auto",
-    // paddingTop: "40px",
-    // alignItems: "center",
-  },
-
-  panel: {
-    // display: "flex",
-    // flexGrow: 1,
-    // width: "100%",
-    // backgroundColor: "#2433334d",
-  },
-
-  table: {
-    // flex: 1,
-    // height: "60vh",
-    // backgroundImage:
-    //   "radial-gradient(rgba(78, 76, 78, 0.89), rgba(22, 20, 22, 0.87))",
-    // borderRadius: "220px",
-    // boxShadow:
-    //   "0 0 5px #fff, 0 0 10px #fff, 0 0 20px #fff, 0 0 40px #0ff, 0 0 80px #0ff, 0 0 90px #0ff",
-  },
-
-  cardsArea: {
-    // border: "3px dashed #86c5cf40",
-    // display: "flex",
-    // flexWrap: "wrap",
-    // position: "absolute",
-    // borderRadius: "10px",
-    // padding: "10px",
-    // top: "47%",
-    // left: "50%",
-    // transform: "translateX(-50%) translateY(-50%)",
-    // boxSizing: "border-box",
-  },
-
-  playerArea: {
-    // position: "relative",
-    // width: "100%",
-    // height: "100%",
-    // zIndex: 100,
-    display: "flex",
-  },
-});
+const SOCKETIO_ENDPOINT = "http://localhost:5000/";
 
 const Table: React.FC = () => {
   const classes = useStyles();
 
-  const [currentPlayerPosition, setCurrentPlayerPosition] = React.useState(4); // taken from preflop
+  // let { id: table_id } = useParams();
+
+  const { state } = useLocation();
+  console.log("state :>> ", state);
+
+  const [currentPlayerPosition, setCurrentPlayerPosition] = React.useState(1); // taken from preflop
   const [
     currentPlayerCards,
     setCurrentPlayerCards,
   ] = React.useState<IPocketHand | null>([
-    { suit: "diamonds", value: "9" },
-    { suit: "clubs", value: "6" },
+    { suit: "diamonds", rank: "9" },
+    { suit: "clubs", rank: "6" },
   ]); // taken from preflop
 
   const [players, setPlayers] = React.useState<IPlayer[]>([]);
@@ -98,8 +39,8 @@ const Table: React.FC = () => {
 
   const [actionPosition, setActionPosition] = React.useState(4);
 
-  const [tableId, setTableId] = useState(1); //fixme:
-  const [username, setUsername] = useState("");
+  const [tableId, setTableId] = useState<number>(state.tableId);
+  const [username, setUsername] = useState<string>(state.username);
   const [actions, setActions] = useState<IRequestAction[]>([
     { type: "fold" },
     { type: "check" },
@@ -111,21 +52,129 @@ const Table: React.FC = () => {
 
   const [isPlayer, setIsPlayer] = useState(false);
 
+  const [socketResponse, setSocketResponse] = useState("");
+
   const refreshPlayers = async () => {
-    const response = await axios.get("http://localhost:5000/api/tables/1/");
+    const response = await API.get("/tables/1/");
     setPlayers(response.data["players"]);
+  };
+
+  const convertStringToPocketHand = (cards: string): IPocketHand => {
+    return [
+      { suit: "spades", rank: "A" },
+      { suit: "spades", rank: "J" },
+    ];
   };
 
   useEffect(() => {
     refreshPlayers();
 
-    setCardsOnTable([
-      { value: "9", suit: "spades" },
-      { value: "T", suit: "diamonds" },
-      { value: "2", suit: "hearts" },
-      { value: "A", suit: "clubs" },
-    ]);
+    // setCardsOnTable([
+    //   { value: "9", suit: "spades" },
+    //   { value: "T", suit: "diamonds" },
+    //   { value: "2", suit: "hearts" },
+    //   { value: "A", suit: "clubs" },
+    // ]);
+
+    //FIXME:: connect this
+    const socket = socketIOClient(SOCKETIO_ENDPOINT);
+
+    console.log("connecting to backend through socket");
+
+    socket.emit("some-event", "hello world");
+
+    socket.on("message1", (data: any) => {
+      console.log("received socket message" + data);
+      setSocketResponse(data.toString());
+    });
+
+    //main event handler
+    socket.on("json", (data: any) => {
+      console.log("received json :>> ", data);
+
+      const event = data["event"];
+      console.log("event", event);
+      switch (event) {
+        case "preflop": {
+          //TODO:
+          const players = data["players"];
+          console.log("players", players);
+          const active_players = data["active_players"];
+          const button_position = data["button_position"];
+          const pot = data["pot"];
+          const current = data["current"];
+
+          const current_cards = current["cards"];
+          const currentPocketHand = convertStringToPocketHand(current_cards);
+          setCurrentPlayerCards(currentPocketHand);
+
+          break;
+        }
+        case "flop_cards": {
+          //TODO:
+          break;
+        }
+        case "turn_card": {
+          //TODO:
+          break;
+        }
+        case "river_card": {
+          //TODO:
+          break;
+        }
+        case "winner": {
+          //TODO:
+          break;
+        }
+        case "request_action": {
+          //TODO:
+          break;
+        }
+        default: {
+          alert("wrong event type came from backend => " + event);
+        }
+        //TODO: other events
+      }
+    });
+
+    //TODO: connect to websocket
+    // socket.emit('message',)
+
+    // const fetchEvents = () => {
+    // console.log(username, tableId);
+    //let handleState = this.state.handleState;
+    // axios
+    //   .get(`http://localhost:8000/api/messages/${tableId}/${username}/`)
+    //   .then((response) => {
+    //     //  this.processEvents(response.data.slice(handleState, handleState + 5));
+    //     //this.setState({ handleState: handleState + 5 });
+    //   })
+    //   .catch(console.log);
+    // };
+
+    // fetchEvents();
+    // let interval = setInterval(() => {
+    //   getData();
+    // }, 2000);
+    // return () => {
+    //   clearInterval(interval);
+    // };
   }, []);
+
+  // socket.on('message',()=>{
+  //   if message='preflop'{
+  //     setCurrentPlayerCards(cards from backend)
+  //   }
+  //   if message ='request action'{
+  //     setActions(allowed actions from backend)
+  //   }
+  //   if message='winner'{
+  //     setwinner
+  //   }
+  //   if mesage='loser'{
+  //     setloser
+  //   }
+  // })
 
   // setCall(value) {
   //   this.setState({ call: value });
@@ -196,37 +245,13 @@ const Table: React.FC = () => {
   //   }
   // }
 
-  const getData = React.useCallback(() => {
-    console.log(username, tableId);
-    //let handleState = this.state.handleState;
-    // axios
-    //   .get(`http://localhost:8000/api/messages/${tableId}/${username}/`)
-    //   .then((response) => {
-    //     //  this.processEvents(response.data.slice(handleState, handleState + 5));
-    //     //this.setState({ handleState: handleState + 5 });
-    //   })
-    //   .catch(console.log);
-  }, [username, tableId]);
-
-  React.useEffect(() => {
-    getData();
-    // let interval = setInterval(() => {
-    //   getData();
-    // }, 2000);
-    // return () => {
-    //   clearInterval(interval);
-    // };
-  }, [getData]);
-
   const onUsernameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
     setUsername(value);
   };
 
   const onJoinTableClick = async () => {
-    const response = await axios.get(
-      `http://localhost:5000/api/tables/${tableId}/join/${username}/`
-    );
+    const response = await API.get(`/tables/${tableId}/join/${username}/`);
     console.log("join table ", response.data);
     setIsPlayer(true);
     refreshPlayers();
@@ -234,9 +259,7 @@ const Table: React.FC = () => {
   };
 
   const onLeaveTableClick = async () => {
-    const response = await axios.get(
-      `http://localhost:5000/api/tables/${tableId}/leave/${username}/`
-    );
+    const response = await API.get(`/tables/${tableId}/leave/${username}/`);
     console.log("join table ", response.data);
     setIsPlayer(false);
     refreshPlayers();
@@ -245,6 +268,16 @@ const Table: React.FC = () => {
 
   return (
     <div className={classes.container}>
+      <h3>socket message: {socketResponse}</h3>
+      <h3>tableId: {tableId}</h3>
+      <h3>username: {username}</h3>
+      <Button
+        onClick={() => {
+          API.get("/restart");
+        }}
+      >
+        Restart hand
+      </Button>
       <TextField
         value={username}
         onChange={onUsernameChange}
@@ -266,16 +299,20 @@ const Table: React.FC = () => {
           {/* )} */}
 
           <div className={classes.playerArea}>
-            {players.map((player: IPlayer, index: number) => (
-              <Player
-                player={player}
-                currentPlayerPosition={currentPlayerPosition}
-                currentPlayerCards={currentPlayerCards}
-                position={player.position}
-                key={player.position}
-                value={call}
-              />
-            ))}
+            {players
+              .sort((a, b) => {
+                return a.position - b.position;
+              })
+              .map((player: IPlayer, index: number) => (
+                <Player
+                  player={player}
+                  currentPlayerPosition={currentPlayerPosition}
+                  currentPlayerCards={currentPlayerCards}
+                  position={player.position}
+                  key={player.position}
+                  value={call}
+                />
+              ))}
           </div>
         </div>
       </div>
