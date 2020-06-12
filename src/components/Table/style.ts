@@ -1,18 +1,19 @@
 import { makeStyles, createStyles, Theme } from "@material-ui/core";
 
 export default makeStyles((theme: Theme) => ({
-  // * {
-  //   margin: 0;
-  //   padding: 0;
-  // },
+  root: {
+    margin: "0",
+    padding: "0",
+  },
 
   body: {
-    //  background: "#222",
+    // background: "#222",
   },
 
   container: {
     // display: "flex",
     // flexDirection: "column",
+    // height: "1000px",
     // height: "100vh",
   },
 
@@ -20,7 +21,10 @@ export default makeStyles((theme: Theme) => ({
     // display: "flex",
     // flexGrow: 4,
     // width: "75%",
+    // height: "1000px",
     // margin: "0 auto",
+    // backgroundColor: "green",
+    margin: "200px",
     // paddingTop: "40px",
     // alignItems: "center",
   },
@@ -34,21 +38,27 @@ export default makeStyles((theme: Theme) => ({
 
   table: {
     // flex: 1,
-    // height: "60vh",
-    // backgroundImage:
-    //   "radial-gradient(rgba(78, 76, 78, 0.89), rgba(22, 20, 22, 0.87))",
-    // borderRadius: "220px",
+    width: "1000px",
+    height: "500px",
+    // backgroundColor: "blue",
+    backgroundImage:
+      "radial-gradient(rgba(78, 76, 78, 0.89), rgba(22, 20, 22, 0.87))",
+    borderRadius: "220px",
     // boxShadow:
     //   "0 0 5px #fff, 0 0 10px #fff, 0 0 20px #fff, 0 0 40px #0ff, 0 0 80px #0ff, 0 0 90px #0ff",
+    position: "relative",
   },
 
   cardsArea: {
-    // border: "3px dashed #86c5cf40",
+    border: "3px dashed #86c5cf40",
     // display: "flex",
     // flexWrap: "wrap",
     // position: "absolute",
-    // borderRadius: "10px",
-    // padding: "10px",
+    margin: "0 auto",
+    width: "50%",
+    borderRadius: "10px",
+    marginTop: "10%",
+    padding: "10px",
     // top: "47%",
     // left: "50%",
     // transform: "translateX(-50%) translateY(-50%)",
@@ -60,6 +70,6 @@ export default makeStyles((theme: Theme) => ({
     // width: "100%",
     // height: "100%",
     // zIndex: 100,
-    display: "flex",
+    // display: "flex",
   },
 }));

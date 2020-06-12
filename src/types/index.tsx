@@ -1,14 +1,13 @@
 export type IPlayer = {
   name: string;
-  username: string;
   position: number;
   stack_size: number;
   cards?: IPocketHand;
 };
 
-type ISuit = "diamonds" | "hearts" | "clubs" | "spades";
+export type ISuit = "diamonds" | "hearts" | "clubs" | "spades";
 
-type IRank =
+export type IRank =
   | "2"
   | "3"
   | "4"
