@@ -3,8 +3,9 @@ import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import socketIOClient from "socket.io-client";
+import act from "../../apis/act";
 import api from "../../apis/api";
+import setupEventListener from "../../apis/socket";
 import {
   ActionType,
   ICard,
@@ -17,9 +18,6 @@ import Card from "../Card";
 import Player from "../Player";
 import useStyles from "./style";
 import { convertStringToCard } from "./utils";
-import act from "../../apis/act";
-
-const SOCKETIO_ENDPOINT = "http://localhost:5000/";
 
 const Table: React.FC = () => {
   const classes = useStyles();
@@ -52,7 +50,9 @@ const Table: React.FC = () => {
 
   const [socketResponse, setSocketResponse] = useState("");
 
-  const [socketEventData, setSocketEventData] = useState<any>({});
+  const [socketEventData, setSocketEventData] = useState<{
+    [key: string]: any;
+  }>({});
 
   const [blinds, setBlinds] = useState({ small: 0, big: 0, ante: 0 });
 
@@ -204,26 +204,9 @@ const Table: React.FC = () => {
 
   //set main event listener
   useEffect(() => {
-    const socket = socketIOClient(SOCKETIO_ENDPOINT);
-
-    socket.on("connect", () => {
-      notify("connect event");
-    });
-
-    socket.on("disconnect", () => {
-      notify("disconnect event");
-    });
-
-    socket.on("json", (data: { [key: string]: any }) => {
-      setSocketEventData(data);
-    });
+    setupEventListener(setSocketEventData);
 
     api.get("/restart");
-  }, []);
-
-  //request action: handle button clicks
-  useEffect(() => {
-    console.log("thank you for such move");
   }, []);
 
   const onUsernameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -248,7 +231,9 @@ const Table: React.FC = () => {
   };
 
   const handleAction = (type: ActionType, size?: number) => {
+    console.log("your act " + type + " " + size);
     act(tableId, username, type, size);
+    setActions([]);
   };
 
   return (
