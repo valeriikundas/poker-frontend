@@ -4,20 +4,20 @@ import { useLocation } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import socketIOClient from "socket.io-client";
-import API from "../../api";
+import api from "../../apis/api";
 import {
+  ActionType,
   ICard,
   IPlayer,
   IPocketHand,
-  IRank,
   IRequestAction,
-  ISuit,
 } from "../../types";
 import ActionPanel from "../ActionPanel";
 import Card from "../Card";
 import Player from "../Player";
 import useStyles from "./style";
 import { convertStringToCard } from "./utils";
+import act from "../../apis/act";
 
 const SOCKETIO_ENDPOINT = "http://localhost:5000/";
 
@@ -39,7 +39,6 @@ const Table: React.FC = () => {
   const [event, setEvent] = React.useState("");
 
   const [cardsOnTable, setCardsOnTable] = useState<ICard[]>([]);
-  const [call, setCall] = useState();
 
   const [actionPosition, setActionPosition] = React.useState(4);
 
@@ -65,7 +64,7 @@ const Table: React.FC = () => {
     });
 
   // const refreshPlayers = async () => {
-  //   const response = await API.get("/tables/1/");
+  //   const response = await api.get("/tables/1/");
   //   setPlayers(response.data["players"]);
   // };
 
@@ -124,7 +123,7 @@ const Table: React.FC = () => {
         return {
           position: player.position,
           username: player.username,
-          stack: player.stack,
+          stack_size: player.stack,
         };
       }
     );
@@ -203,22 +202,28 @@ const Table: React.FC = () => {
     setActions(actionSpace);
   };
 
+  //set main event listener
   useEffect(() => {
-    // notify("refresh");
-    // refreshPlayers();
-
     const socket = socketIOClient(SOCKETIO_ENDPOINT);
+
+    socket.on("connect", () => {
+      notify("connect event");
+    });
 
     socket.on("disconnect", () => {
       notify("disconnect event");
     });
 
-    //main event handler
     socket.on("json", (data: { [key: string]: any }) => {
       setSocketEventData(data);
     });
 
-    API.get("/restart");
+    api.get("/restart");
+  }, []);
+
+  //request action: handle button clicks
+  useEffect(() => {
+    console.log("thank you for such move");
   }, []);
 
   const onUsernameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -227,7 +232,7 @@ const Table: React.FC = () => {
   };
 
   const onJoinTableClick = async () => {
-    const response = await API.get(`/tables/${tableId}/join/${username}/`);
+    const response = await api.get(`/tables/${tableId}/join/${username}/`);
     console.log("join table ", response.data);
     setIsPlayer(true);
     // refreshPlayers();
@@ -235,11 +240,15 @@ const Table: React.FC = () => {
   };
 
   const onLeaveTableClick = async () => {
-    const response = await API.get(`/tables/${tableId}/leave/${username}/`);
+    const response = await api.get(`/tables/${tableId}/leave/${username}/`);
     console.log("join table ", response.data);
     setIsPlayer(false);
     // refreshPlayers();
     //todo: subscribe #2 to socketio
+  };
+
+  const handleAction = (type: ActionType, size?: number) => {
+    act(tableId, username, type, size);
   };
 
   return (
@@ -250,7 +259,7 @@ const Table: React.FC = () => {
       <h3>username: {username}</h3>
       <Button
         onClick={() => {
-          API.get("/restart");
+          api.get("/restart");
         }}
       >
         Restart hand
@@ -289,7 +298,6 @@ const Table: React.FC = () => {
                   currentPlayerCards={currentPlayerCards}
                   position={player.position}
                   key={player.position}
-                  value={call}
                   button={player.position === buttonPosition}
                   active={player.position === actionPosition}
                 />
@@ -305,7 +313,7 @@ const Table: React.FC = () => {
             actions={actions}
             tableId={tableId}
             username={username}
-            setCall={setCall}
+            handleAction={handleAction}
           />
         }
       </div>

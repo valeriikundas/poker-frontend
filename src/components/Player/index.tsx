@@ -10,7 +10,6 @@ interface PlayerProps {
   position: number;
   button: boolean;
   active: boolean;
-  value: any;
 }
 
 const Player = ({
@@ -20,14 +19,12 @@ const Player = ({
   position,
   button,
   active,
-  value,
 }: PlayerProps) => {
   const classes = useStyles();
 
   return (
     <div className={classes.player}>
       <div>
-        {currentPlayerPosition === position && <h3>{value}</h3>}
         {currentPlayerPosition === position &&
           (currentPlayerCards ? (
             currentPlayerCards.map((card: ICard, index: number) => (
@@ -51,7 +48,7 @@ const Player = ({
           // ))
         }
       </div>
-      <div className={`${classes.playerInfo} `}>
+      <div className={classes.playerInfo}>
         <div>{player.name}</div>
         <div>{player.position || "none"}</div>
         <div>{player.stack_size}</div>

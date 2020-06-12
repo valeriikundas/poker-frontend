@@ -1,8 +1,7 @@
 import { Button, makeStyles } from "@material-ui/core";
-import API from "../../api";
 import React, { useEffect, useState } from "react";
 import { Redirect } from "react-router";
-import { Router } from "react-router-dom";
+import api from "../../apis/api";
 
 const useStyles = makeStyles({
   // body: {
@@ -131,7 +130,7 @@ const Dashboard = () => {
     // const username = window.location.href;
     // console.log("username :>> ", username);
     const fetchTables = async () => {
-      const result = await API.get(`/tables`);
+      const result = await api.get(`/tables`);
       setTables(result.data);
     };
 
@@ -144,7 +143,7 @@ const Dashboard = () => {
     setTableId(id);
     // setUsername(username);
 
-    const result = await API.get(`/tables/${id}/join/${username}`);
+    const result = await api.get(`/tables/${id}/join/${username}`);
 
     if (result.data["status"] === "joined") {
       setRedirect(true);

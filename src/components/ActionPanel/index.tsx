@@ -51,23 +51,24 @@ interface ActionPanelProps {
   actions: IRequestAction[];
   tableId: number;
   username: string;
-  setCall: any; //todo: delete this variable
+  handleAction: (type: ActionType, size?: number) => void;
 }
 
 const ActionPanel = ({
   tableId,
   username,
   actions,
-  ...props
+  handleAction,
 }: ActionPanelProps) => {
   const classes = useStyles();
 
-  const [timeoutProps, setTimeoutProps] = React.useState<TimeoutProps>({
-    // value: 10,
-    //todo: p4 to be implemented later
-    seconds: 10,
-    tooLate: false,
-  });
+  // TODO: no timeout for now  3
+  // const [timeoutProps, setTimeoutProps] = React.useState<TimeoutProps>({
+  //   // value: 10,
+  //   //todo: p4 to be implemented later
+  //   seconds: 10,
+  //   tooLate: false,
+  // });
 
   const [raiseSize, setRaiseSize] = React.useState(0);
 
@@ -134,34 +135,11 @@ const ActionPanel = ({
   //       });
   //   }
 
-  const handleAction = (type: ActionType, size?: number) => {
-    console.log(type, size);
-    axios.post(`http://localhost:5000/api/act/${tableId}/${username}`, {
-      type: type,
-      size: size,
-    });
-
-    // todo: p4 timeout on moves
-    //   const response = this.state.tooLate
-    //     ? { status: "timeout" }
-    //     : type === "raise"
-    //     ? {
-    //         status: "ok",
-    //         action: {
-    //           type,
-    //           size: this.state.value,
-    //         },
-    //       }
-    //     : {
-    //         status: "ok",
-    //         action: { type },
-    //       };
-  };
-
   return (
     <MuiThemeProvider theme={theme}>
       <div className={classes.wrapper}>
-        {!timeoutProps.tooLate &&
+        {
+          //!timeoutProps.tooLate &&
           actions.map((button: any, index: number) =>
             button.type === "call" ? (
               <Button
@@ -214,7 +192,8 @@ const ActionPanel = ({
                 {button.type}
               </Button>
             )
-          )}
+          )
+        }
         {/* <h1>00:{someProps.seconds}</h1> */}
       </div>
     </MuiThemeProvider>
