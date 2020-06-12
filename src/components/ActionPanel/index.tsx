@@ -6,7 +6,7 @@ import {
   MuiThemeProvider,
 } from "@material-ui/core/styles";
 import axios from "axios";
-import React from "react";
+import React, { useEffect } from "react";
 import { ActionType, IRequestAction } from "../../types/index";
 
 // import useStyles from "./action-panel-style.css";
@@ -70,6 +70,23 @@ const ActionPanel = ({
   });
 
   const [raiseSize, setRaiseSize] = React.useState(0);
+
+  const getAndSetMinRaiseSize = () => {
+    // set min raise size
+    const raiseActions = actions.filter((action) => action.type === "raise");
+    if (!raiseActions.length) {
+      return;
+    }
+    const raiseAction = raiseActions[0];
+    if (!raiseAction.min) {
+      return;
+    }
+    setRaiseSize(raiseAction.min);
+  };
+
+  useEffect(() => {
+    getAndSetMinRaiseSize();
+  }, [actions]);
 
   // const [aaa,setAaa]=React.useState(
   // {  value: 0,
