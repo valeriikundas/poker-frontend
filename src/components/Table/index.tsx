@@ -41,7 +41,9 @@ const Table: React.FC = () => {
   const [actionPosition, setActionPosition] = React.useState(4);
 
   const [tableId, setTableId] = useState<number>(state && state["tableId"]);
-  const [username, setUsername] = useState<string>(state && state["username"]);
+  const [username, setUsername] = useState<string>(
+    (state && state["username"]) || "ccc"
+  );
   const [actions, setActions] = useState<IRequestAction[]>([]);
 
   const [pot, setPot] = useState(0);
@@ -69,7 +71,6 @@ const Table: React.FC = () => {
   // };
 
   useEffect(() => {
-    console.log("eventMessage", socketEventData);
     const data = socketEventData;
 
     setSocketResponse(`${data}`);
@@ -119,13 +120,11 @@ const Table: React.FC = () => {
     //TODO:
     const playersData = data["players"];
     const players: IPlayer[] = playersData.map(
-      (player: { [key: string]: any }) => {
-        return {
-          position: player.position,
-          username: player.username,
-          stack_size: player.stack,
-        };
-      }
+      (player: { [key: string]: any }): IPlayer => ({
+        position: player.position,
+        name: player.username,
+        stack_size: player.stack,
+      })
     );
     setPlayers(players);
 
@@ -151,6 +150,17 @@ const Table: React.FC = () => {
     ) as IPocketHand;
 
     setCurrentPlayerCards(currentPocketHand);
+
+    const index = players.findIndex((player) => player.name === username);
+    if (index === -1) {
+      console.error(
+        `player with username ${username} was not found in players`
+      );
+      console.error(players);
+      return;
+    }
+    const position = players[index].position;
+    setCurrentPlayerPosition(position);
   };
 
   const handleFlop = (data: any) => {
@@ -159,7 +169,6 @@ const Table: React.FC = () => {
     const flopCards: ICard[] = receivedFlopCards.map((card: string) =>
       convertStringToCard(card)
     );
-    console.log("flopCards", flopCards);
     setCardsOnTable(flopCards);
   };
 
@@ -180,7 +189,6 @@ const Table: React.FC = () => {
   };
 
   const handleWinner = (data: any) => {
-    console.log("data", data);
     const winnerPosition: number = data["winner_position"];
     const pot: number = data["pot"];
 
@@ -216,7 +224,7 @@ const Table: React.FC = () => {
 
   const onJoinTableClick = async () => {
     const response = await api.get(`/tables/${tableId}/join/${username}/`);
-    console.log("join table ", response.data);
+    console.log("response", response);
     setIsPlayer(true);
     // refreshPlayers();
     //todo: subscribe #2 to socketio
@@ -224,14 +232,12 @@ const Table: React.FC = () => {
 
   const onLeaveTableClick = async () => {
     const response = await api.get(`/tables/${tableId}/leave/${username}/`);
-    console.log("join table ", response.data);
     setIsPlayer(false);
     // refreshPlayers();
     //todo: subscribe #2 to socketio
   };
 
   const handleAction = (type: ActionType, size?: number) => {
-    console.log("your act " + type + " " + size);
     act(tableId, username, type, size);
     setActions([]);
   };
@@ -258,9 +264,15 @@ const Table: React.FC = () => {
       <Button onClick={onLeaveTableClick}>Leave</Button>
       <div className={classes.containerTable}>
         <div className={classes.table}>
-          <div>pot: {pot}</div>
-          <div>
-            blinds: {blinds.small} {blinds.big} {blinds.ante}
+          <div
+            style={{
+              paddingTop: "100px",
+            }}
+          >
+            <div>pot: {pot}</div>
+            <div>
+              blinds: {blinds.small} {blinds.big} {blinds.ante}
+            </div>
           </div>
 
           {/* {event !== "preflop" && event !== "" && ( */}

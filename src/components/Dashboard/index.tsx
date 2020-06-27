@@ -113,19 +113,6 @@ const Dashboard = () => {
 
   const [tables, setTables] = useState<Table[]>([{ id: 5 }]);
 
-  // const compare = (a: any, b: any) => {
-  //   return -1;
-  //   // const firstTable = a.id;
-  //   // const secondTable = b.id;
-  //   // let comparision = 0;
-  //   // if (firstTable > secondTable) {
-  //   //   comparision = 1;
-  //   // } else if (firstTable < secondTable) {
-  //   //   comparision = -1;
-  //   // }
-  //   // return comparision;
-  // };
-
   useEffect(() => {
     // const username = window.location.href;
     // console.log("username :>> ", username);
